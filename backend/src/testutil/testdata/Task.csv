@@ -1,0 +1,6 @@
+"Id","TaskId","TaskContent","TaskCategory","TaskName"
+1,"076c17e6-3f48-49a2-a4a1-68c3888ba2cd","model1model1","DB設計","DBモデリング1"
+2,"d848ec90-fc48-49a5-b41c-6fa70d25a0aa","model2model2","DB設計","DBモデリング2"
+3,"2f05b674-6e6d-4b37-b343-4e17953a4a33","unit1unit1","テスト","単体テスト1"
+4,"a3b4f0ea-b188-403b-9141-97a044535972","unit2unit2","テスト","単体テスト2"
+5,"75b71703-0b3d-4901-a91b-0d66e78f944f","tdd1tdd1","設計","TDD"
