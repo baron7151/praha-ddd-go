@@ -5,19 +5,7 @@ import (
 	"testing"
 
 	domaincommon "github.com/baron7151/praha-ddd-go/src/domain/common"
-	domainpair "github.com/baron7151/praha-ddd-go/src/domain/pair"
-	domainteam "github.com/baron7151/praha-ddd-go/src/domain/team"
 )
-
-func TestNewUserId_ValidId(t *testing.T) {
-	userId, err := NewUserId("")
-	if err != nil {
-		t.Errorf("エラーが発生しました: %v", err)
-	}
-	if reflect.TypeOf(userId).String() != "domainuser.UserId" {
-		t.Errorf("期待値: domainuser.UserId, 実際の値: %s", reflect.TypeOf(userId).String())
-	}
-}
 
 func TestNewUserName_ValidName(t *testing.T) {
 	userName, err := NewUserName("test")
@@ -39,8 +27,8 @@ func TestEquals_Equal(t *testing.T) {
 }
 
 func TestWithPairId_ValidPairId(t *testing.T) {
-	pairId, _ := domainpair.NewPairId("")
-	userId, _ := NewUserId("")
+	pairId, _ := domaincommon.NewBaseUUID("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@exmaple.com")
 	status := ACTIVE
@@ -51,8 +39,8 @@ func TestWithPairId_ValidPairId(t *testing.T) {
 }
 
 func TestWithTeamId_ValidTeamId(t *testing.T) {
-	teamId, _ := domainteam.NewTeamId("")
-	userId, _ := NewUserId("")
+	teamId, _ := domaincommon.NewBaseUUID("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -63,12 +51,12 @@ func TestWithTeamId_ValidTeamId(t *testing.T) {
 }
 
 func TestNewUserEntity_ValidUserEntity(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
-	pairId, _ := domainpair.NewPairId("")
-	teamId, _ := domainteam.NewTeamId("")
+	pairId, _ := domaincommon.NewBaseUUID("")
+	teamId, _ := domaincommon.NewBaseUUID("")
 	user := NewUserEntity(userId, userName, email, status, WithPairId(&pairId), WithTeamId(&teamId))
 	if reflect.TypeOf(user).String() != "domainuser.UserEntity" {
 		t.Errorf("期待値: domainuser.UserEntity, 実際の値: %s", reflect.TypeOf(user).String())
@@ -76,7 +64,7 @@ func TestNewUserEntity_ValidUserEntity(t *testing.T) {
 }
 
 func TestGetAllProperties_ValidProperties(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -104,7 +92,7 @@ func TestGetAllProperties_ValidProperties(t *testing.T) {
 }
 
 func TestEquals_ValidUserEntity(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -117,7 +105,7 @@ func TestEquals_ValidUserEntity(t *testing.T) {
 }
 
 func TestChangeStatus_ValidStatus(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -135,7 +123,7 @@ func TestChangeStatus_ValidStatus(t *testing.T) {
 }
 
 func TestChangeUserName_ValidUserName(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -148,7 +136,7 @@ func TestChangeUserName_ValidUserName(t *testing.T) {
 }
 
 func TestChangeEmail_ValidEmail(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
@@ -161,14 +149,14 @@ func TestChangeEmail_ValidEmail(t *testing.T) {
 }
 
 func TestChangePairId_ValidPairId(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
-	pairId, _ := domainpair.NewPairId("")
-	teamId, _ := domainteam.NewTeamId("")
+	pairId, _ := domaincommon.NewBaseUUID("")
+	teamId, _ := domaincommon.NewBaseUUID("")
 	user1 := NewUserEntity(userId, userName, email, status, WithPairId(&pairId), WithTeamId(&teamId))
-	changePairId, _ := domainpair.NewPairId("")
+	changePairId, _ := domaincommon.NewBaseUUID("")
 	user2, _ := user1.ChangePairId(changePairId)
 	if user2.GetPairId().GetValue() != changePairId.GetValue() {
 		t.Errorf("期待値: %s, 実際の値: %s", changePairId.GetValue(), user2.pairId.GetValue())
@@ -176,14 +164,14 @@ func TestChangePairId_ValidPairId(t *testing.T) {
 }
 
 func TestChangeTeamId_ValidTeamId(t *testing.T) {
-	userId, _ := NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := NewUserName("test1")
 	email, _ := domaincommon.NewEmail("test1@example.com")
 	status := ACTIVE
-	pairId, _ := domainpair.NewPairId("")
-	teamId, _ := domainteam.NewTeamId("")
+	pairId, _ := domaincommon.NewBaseUUID("")
+	teamId, _ := domaincommon.NewBaseUUID("")
 	user1 := NewUserEntity(userId, userName, email, status, WithPairId(&pairId), WithTeamId(&teamId))
-	changeTeamId, _ := domainteam.NewTeamId("")
+	changeTeamId, _ := domaincommon.NewBaseUUID("")
 	user2, _ := user1.ChangeTeamId(changeTeamId)
 	if user2.GetTeamId().GetValue() != changeTeamId.GetValue() {
 		t.Errorf("期待値: %s, 実際の値: %s", changeTeamId.GetValue(), user2.teamId.GetValue())

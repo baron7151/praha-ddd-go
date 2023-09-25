@@ -7,8 +7,6 @@ import (
 	"github.com/joho/godotenv"
 
 	domaincommon "github.com/baron7151/praha-ddd-go/src/domain/common"
-	domainpair "github.com/baron7151/praha-ddd-go/src/domain/pair"
-	domainteam "github.com/baron7151/praha-ddd-go/src/domain/team"
 	domainuser "github.com/baron7151/praha-ddd-go/src/domain/user"
 	"github.com/baron7151/praha-ddd-go/src/infra"
 	"github.com/stretchr/testify/assert"
@@ -34,7 +32,7 @@ func TestFindByUserId(t *testing.T) {
 		t.Fatal(result.Error)
 	}
 	userEntity, _ := domainuser.Create(user.UserId, user.UserName, user.Email, user.UserStatus, user.PairId, user.TeamId)
-	userId, _ := domainuser.NewUserId(user.UserId)
+	userId, _ := domaincommon.NewBaseUUID(user.UserId)
 	// 実行
 	res, err := userRepsitory.FindByUserId(userId)
 	if err != nil {
@@ -74,7 +72,7 @@ func TestFindByTeamId(t *testing.T) {
 		t.Fatal(result.Error)
 	}
 	//userEntity, _ := domainuser.Create(user.UserId, user.UserName, user.Email, user.UserStatus, user.PairId, user.TeamId)
-	teamId, _ := domainteam.NewTeamId(*user.TeamId)
+	teamId, _ := domaincommon.NewBaseUUID(*user.TeamId)
 	// 実行
 	res, err := userRepsitory.FindByTeamId(teamId)
 	if err != nil {
@@ -96,7 +94,7 @@ func TestFindByPairId(t *testing.T) {
 		t.Fatal(result.Error)
 	}
 	//userEntity, _ := domainuser.Create(user.UserId, user.UserName, user.Email, user.UserStatus, user.PairId, user.TeamId)
-	pairId, _ := domainpair.NewPairId(*user.PairId)
+	pairId, _ := domaincommon.NewBaseUUID(*user.PairId)
 	// 実行
 	res, err := userRepsitory.FindByPairId(pairId)
 	if err != nil {
@@ -122,9 +120,9 @@ func TestFindByManyUserIds(t *testing.T) {
 	if result2.Error != nil {
 		t.Fatal(result1.Error)
 	}
-	userId1, _ := domainuser.NewUserId(user1.UserId)
-	userId2, _ := domainuser.NewUserId(user2.UserId)
-	userIds := []domainuser.UserId{userId1, userId2}
+	userId1, _ := domaincommon.NewBaseUUID(user1.UserId)
+	userId2, _ := domaincommon.NewBaseUUID(user2.UserId)
+	userIds := []domaincommon.BaseUUID{userId1, userId2}
 
 	// 実行
 	res, err := userRepsitory.FindByManyUserIds(userIds)
@@ -163,7 +161,7 @@ func TestSave_Create(t *testing.T) {
 	infra.InitDB()
 	db, _ := infra.ConnectDB()
 	userRepsitory := NewUserRepository(db)
-	userId, _ := domainuser.NewUserId("")
+	userId, _ := domaincommon.NewBaseUUID("")
 	userName, _ := domainuser.NewUserName("test100")
 	email, _ := domaincommon.NewEmail("test100@example.com")
 	status := domainuser.ACTIVE

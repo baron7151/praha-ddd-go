@@ -2,8 +2,6 @@ package domainuser
 
 import (
 	domaincommon "github.com/baron7151/praha-ddd-go/src/domain/common"
-	domainpair "github.com/baron7151/praha-ddd-go/src/domain/pair"
-	domainteam "github.com/baron7151/praha-ddd-go/src/domain/team"
 )
 
 type UserStatus string
@@ -27,18 +25,6 @@ func StringToUserStatus(statusStr string) (UserStatus, error) {
 	}
 }
 
-type UserId struct {
-	domaincommon.UUIDProvider
-}
-
-func NewUserId(value string) (UserId, error) {
-	baseUUID, err := domaincommon.NewBaseUUID(value)
-	if err != nil {
-		return UserId{}, err
-	}
-	return UserId{UUIDProvider: baseUUID}, nil
-}
-
 type UserName struct {
 	value string
 }
@@ -57,39 +43,39 @@ func (u *UserName) Equals(other UserName) bool {
 }
 
 type UserEntity struct {
-	userId   UserId
+	userId   domaincommon.BaseUUID
 	userName UserName
 	email    domaincommon.Email
 	status   UserStatus
-	pairId   *domainpair.PairId
-	teamId   *domainteam.TeamId
+	pairId   *domaincommon.BaseUUID
+	teamId   *domaincommon.BaseUUID
 }
 
 type UserProperties struct {
-	UserId     UserId
+	UserId     domaincommon.BaseUUID
 	UserName   UserName
 	Email      domaincommon.Email
 	UserStatus UserStatus
-	PairId     *domainpair.PairId
-	TeamId     *domainteam.TeamId
+	PairId     *domaincommon.BaseUUID
+	TeamId     *domaincommon.BaseUUID
 }
 
 type UserOption func(*UserEntity)
 
-func WithPairId(pairId *domainpair.PairId) UserOption {
+func WithPairId(pairId *domaincommon.BaseUUID) UserOption {
 	return func(u *UserEntity) {
 		u.pairId = pairId
 	}
 }
 
-func WithTeamId(teamId *domainteam.TeamId) UserOption {
+func WithTeamId(teamId *domaincommon.BaseUUID) UserOption {
 	return func(u *UserEntity) {
 		u.teamId = teamId
 	}
 }
 
 func NewUserEntity(
-	userId UserId,
+	userId domaincommon.BaseUUID,
 	userName UserName,
 	email domaincommon.Email,
 	status UserStatus,
@@ -109,7 +95,7 @@ func NewUserEntity(
 	return userEntity
 }
 
-func (u UserEntity) GetUserId() UserId {
+func (u UserEntity) GetUserId() domaincommon.BaseUUID {
 	return u.userId
 }
 
@@ -125,11 +111,11 @@ func (u UserEntity) GetUserStatus() UserStatus {
 	return u.status
 }
 
-func (u UserEntity) GetPairId() *domainpair.PairId {
+func (u UserEntity) GetPairId() *domaincommon.BaseUUID {
 	return u.pairId
 }
 
-func (u UserEntity) GetTeamId() *domainteam.TeamId {
+func (u UserEntity) GetTeamId() *domaincommon.BaseUUID {
 	return u.teamId
 }
 
@@ -168,10 +154,10 @@ func (u UserEntity) ChangeEmail(email domaincommon.Email) (UserEntity, error) {
 	return NewUserEntity(u.userId, u.userName, email, u.status, WithPairId(u.pairId), WithTeamId(u.teamId)), nil
 }
 
-func (u UserEntity) ChangePairId(pairId domainpair.PairId) (UserEntity, error) {
+func (u UserEntity) ChangePairId(pairId domaincommon.BaseUUID) (UserEntity, error) {
 	return NewUserEntity(u.userId, u.userName, u.email, u.status, WithPairId(&pairId), WithTeamId(u.teamId)), nil
 }
 
-func (u UserEntity) ChangeTeamId(teamId domainteam.TeamId) (UserEntity, error) {
+func (u UserEntity) ChangeTeamId(teamId domaincommon.BaseUUID) (UserEntity, error) {
 	return NewUserEntity(u.userId, u.userName, u.email, u.status, WithPairId(u.pairId), WithTeamId(&teamId)), nil
 }

@@ -12,10 +12,10 @@ type BaseUUID struct {
 	value string
 }
 
-type UUIDProvider interface {
-	GetValue() string
-	Equals(other UUIDProvider) bool
-}
+// type UUIDProvider interface {
+// 	GetValue() string
+// 	Equals(other UUIDProvider) bool
+// }
 
 func NewBaseUUID(value string) (BaseUUID, error) {
 	if value == "" {
@@ -31,9 +31,7 @@ func (u BaseUUID) GetValue() string {
 	return u.value
 }
 
-func (u BaseUUID) Equals(other UUIDProvider) bool {
-	if otherUUID, ok := other.(BaseUUID); ok {
-		return u.value == otherUUID.value
-	}
-	return false
+func (u BaseUUID) Equals(b BaseUUID) bool {
+	return u.value == b.value
+
 }

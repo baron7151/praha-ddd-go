@@ -1,7 +1,6 @@
 package controlleruser
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -21,10 +20,10 @@ func UserController(e *echo.Echo) {
 
 	e.GET("/user", func(c echo.Context) error {
 		username := c.QueryParam("user_name")
-		fmt.Println(username)
 		result, err := getUserDataUsecase.GetUserData(username)
 		if err != nil {
 			log.Fatal(err)
+			return c.JSON(http.StatusInternalServerError, err)
 		}
 		return c.JSON(http.StatusOK, result)
 	})

@@ -4,8 +4,6 @@ import (
 	"errors"
 
 	domaincommon "github.com/baron7151/praha-ddd-go/src/domain/common"
-	domainpair "github.com/baron7151/praha-ddd-go/src/domain/pair"
-	domainteam "github.com/baron7151/praha-ddd-go/src/domain/team"
 	domainuser "github.com/baron7151/praha-ddd-go/src/domain/user"
 	"github.com/baron7151/praha-ddd-go/src/infra"
 	"gorm.io/gorm"
@@ -23,7 +21,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) FindByUserId(userId domainuser.UserId) (domainuser.UserEntity, error) {
+func (r *UserRepository) FindByUserId(userId domaincommon.BaseUUID) (domainuser.UserEntity, error) {
 
 	var user infra.User
 	result := r.db.Where("user_id = ?", userId.GetValue()).First(&user)
@@ -55,7 +53,7 @@ func (r *UserRepository) FindByEmail(email domaincommon.Email) (domainuser.UserE
 	return userEntity, nil
 }
 
-func (r *UserRepository) FindByTeamId(teamId domainteam.TeamId) ([]domainuser.UserEntity, error) {
+func (r *UserRepository) FindByTeamId(teamId domaincommon.BaseUUID) ([]domainuser.UserEntity, error) {
 	var users []infra.User
 	result := r.db.Where("team_id = ?", teamId.GetValue()).Find(&users)
 	if result.Error != nil {
@@ -71,7 +69,7 @@ func (r *UserRepository) FindByTeamId(teamId domainteam.TeamId) ([]domainuser.Us
 	return userEntities, nil
 }
 
-func (r *UserRepository) FindByPairId(pairId domainpair.PairId) ([]domainuser.UserEntity, error) {
+func (r *UserRepository) FindByPairId(pairId domaincommon.BaseUUID) ([]domainuser.UserEntity, error) {
 	var users []infra.User
 	result := r.db.Where("pair_id = ?", pairId.GetValue()).Find(&users)
 	if result.Error != nil {
@@ -87,7 +85,7 @@ func (r *UserRepository) FindByPairId(pairId domainpair.PairId) ([]domainuser.Us
 	return userEntities, nil
 }
 
-func (r *UserRepository) FindByManyUserIds(userIds []domainuser.UserId) ([]domainuser.UserEntity, error) {
+func (r *UserRepository) FindByManyUserIds(userIds []domaincommon.BaseUUID) ([]domainuser.UserEntity, error) {
 	var users []infra.User
 	var userIdsStr []string
 	for _, userId := range userIds {
@@ -125,8 +123,8 @@ func (r *UserRepository) Save(saveUser domainuser.UserEntity) error {
 		newUser.TeamId = &TeamID
 	}
 	tx := r.db.Begin()
-	result := tx.Where("user_id = ?", saveUser.GetUserId().GetValue()).First(&user)
-	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	result := tx.Where("user_id = ?", saveUser.GetUserId().GetValue()).Find(&user)
+	if result.Error != nil {
 		return result.Error
 	}
 	if user.Id == 0 {
